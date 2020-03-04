@@ -1,0 +1,11 @@
+#div-login{
+    border-style: solid; 
+    border-width: 1px; 
+    border-color: grey; 
+    border-radius: 8px; 
+    padding: 64px
+}
+
+.std-padding-top{
+    padding-top: 64px
+}
