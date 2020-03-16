@@ -89,20 +89,18 @@ if (isset($_POST['deleteProvider'])) {
     <div class="form-group input-group col-md-12">
         <div class="col-md-2">
             <!-- Button trigger modal novo fornecedor -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createProvider">
+            <button type="button" class="btn btn-primary btn-row" data-toggle="modal" data-target="#createProvider">
                 Novo fornecedor
             </button>
         </div>
-        <div class="col-md-2">
-        </div>
-        <div class="col-md-4"></div>
+        <div class="col-md-6"></div>
         <div class="col-md-4">
             <input name="consulta" id="txt_consulta" placeholder="Buscar" type="text" class="form-control">
         </div>
     </div>
     <br>
 
-    <table id="tabela" class="table table-hover">
+    <table id="tabela" class="table table-hover table-responsive-xl">
         <thead>
             <tr>
                 <th scope="col">ID</th>

@@ -24,6 +24,7 @@ function productEdit(id_product) {
             id_product: id_product
         },
         success: function (html) {
+            console.log(html);
             $("#bodyEditProduct").html(html);
         }
     });

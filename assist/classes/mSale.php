@@ -1,21 +1,13 @@
 <?php
 
-class mProduct extends mConnection {
+class mSale extends mConnection {
 
-    public function createProduct($DESCRIPTION, $QUANTITY, $LOW_STOCK, $FK_ID_UNITY, $MEASURE, $COST, $SALE_VALUE, $FK_ID_PROVIDER, $OBSERVATION, $CREATED_BY) {
-        $sql = "INSERT INTO PRODUCT(DESCRIPTION, QUANTITY, LOW_STOCK, FK_ID_UNITY, MEASURE, COST, SALE_VALUE, FK_ID_PROVIDER, OBSERVATION, CREATED_BY) VALUES(:DESCRIPTION, :QUANTITY, :LOW_STOCK, :FK_ID_UNITY, :MEASURE, :COST, :SALE_VALUE, :FK_ID_PROVIDER, :OBSERVATION, :CREATED_BY)";
+    public function createOrder($DESCRIPTION, $QUANTITY, $LOW_STOCK, $FK_ID_UNITY, $MEASURE, $COST, $SALE_VALUE, $FK_ID_PROVIDER, $OBSERVATION, $CREATED_BY) {
+        $sql = "INSERT INTO SALE_ORDER (FK_ID_CLIENT, STATUS, CREATED_BY, CREATED_ON) VALUES (:FK_ID_CLIENT,'1',:CREATED_BY,NOW())";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
-        $stmt->bindParam(":DESCRIPTION", $DESCRIPTION, PDO::PARAM_STR);
-        $stmt->bindParam(":QUANTITY", $QUANTITY, PDO::PARAM_INT);
-        $stmt->bindParam(":LOW_STOCK", $LOW_STOCK, PDO::PARAM_INT);
-        $stmt->bindParam(":FK_ID_UNITY", $FK_ID_UNITY, PDO::PARAM_INT);
-        $stmt->bindParam(":MEASURE", $MEASURE, PDO::PARAM_STR);
-        $stmt->bindParam(":COST", $COST, PDO::PARAM_STR);
-        $stmt->bindParam(":SALE_VALUE", $SALE_VALUE, PDO::PARAM_STR);
-        $stmt->bindParam(":FK_ID_PROVIDER", $FK_ID_PROVIDER, PDO::PARAM_INT);
-        $stmt->bindParam(":OBSERVATION", $OBSERVATION, PDO::PARAM_STR);
-        $stmt->bindParam(":CREATED_BY", $CREATED_BY, PDO::PARAM_INT);
+        $stmt->bindParam(":FK_ID_CLIENT", $DESCRIPTION, PDO::PARAM_STR);
+        $stmt->bindParam(":CREATED_BY", $QUANTITY, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
@@ -25,7 +17,7 @@ class mProduct extends mConnection {
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":DESCRIPTION", $DESCRIPTION, PDO::PARAM_STR);
         $stmt->bindParam(":QUANTITY", $QUANTITY, PDO::PARAM_STR);
-        $stmt->bindParam(":LOW_STOCK", $LOW_STOCK, PDO::PARAM_STR);
+        $stmt->bindParam(":LOW_STOCK", $LOW_STOCK, PDO::PARAM_INT);
         $stmt->bindParam(":FK_ID_UNITY", $FK_ID_UNITY, PDO::PARAM_INT);
         $stmt->bindParam(":MEASURE", $MEASURE, PDO::PARAM_STR);
         $stmt->bindParam(":COST", $COST, PDO::PARAM_STR);

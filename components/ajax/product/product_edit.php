@@ -17,7 +17,14 @@ if (isset($_POST['id_product'])) {
     $providers = $mProduct->getProviders();
 
     $p = $mProduct->getProduct($_POST['id_product']);
-    ?> 
+    ?>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.money').mask('#.##0.00', {reverse: true});
+        });
+    </script>
+
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-8">
@@ -74,9 +81,9 @@ if (isset($_POST['id_product'])) {
                 <label for="provider">Fornecedor</label>
                 <select name="provider" id="edit_provider" class="form-control" required="">
                     <?php if ($p['FK_ID_PROVIDER'] == 0) { ?>
-                            <option value="" selected="">Sem fornecedor cadastrado</option>
-                            <?php
-                        } foreach ($providers as $provider) {
+                        <option value="0" selected="">Sem fornecedor cadastrado</option>
+                        <?php
+                    } foreach ($providers as $provider) {
                         if ($provider['ID'] == $p['FK_ID_PROVIDER']) {
                             ?>
                             <option value="<?= $provider['ID'] ?>" selected=""><?= $provider['NAME'] . " - " . $provider['CPF_CNPJ'] ?></option>
