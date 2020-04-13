@@ -23,12 +23,19 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="client.php">Cliente</a>
-            </li> 
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Contas a pagar</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="sale.php">Venda</a>
+                <div class="dropdown mr-1">
+                    <a class="nav-link dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="10,20">Vendas</a>
+
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
+                        <a class="dropdown-item" href="sale.php">Nova pedido</a>
+                        <a class="dropdown-item" href="#">Buscar pedido</a>
+                    </div>
+                </div>
             </li>
             <li class="nav-item" style="position: absolute; right: 24px">
                 <a class="nav-link" href="#">Sair</a>

@@ -1,17 +1,45 @@
 <?php
 
-class mSale extends mConnection {
+class mSale extends mConnection
+{
 
-    public function createOrder($DESCRIPTION, $QUANTITY, $LOW_STOCK, $FK_ID_UNITY, $MEASURE, $COST, $SALE_VALUE, $FK_ID_PROVIDER, $OBSERVATION, $CREATED_BY) {
-        $sql = "INSERT INTO SALE_ORDER (FK_ID_CLIENT, STATUS, CREATED_BY, CREATED_ON) VALUES (:FK_ID_CLIENT,'1',:CREATED_BY,NOW())";
+    public function createOrder($FK_ID_CLIENT, $CREATED_BY)
+    {
+        $sql = "INSERT INTO SALE_ORDER (FK_ID_CLIENT, STATUS, CREATED_BY, CREATED_ON) VALUES (:FK_ID_CLIENT,'0',:CREATED_BY,NOW())";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
-        $stmt->bindParam(":FK_ID_CLIENT", $DESCRIPTION, PDO::PARAM_STR);
-        $stmt->bindParam(":CREATED_BY", $QUANTITY, PDO::PARAM_INT);
+        $stmt->bindParam(":FK_ID_CLIENT", $FK_ID_CLIENT, PDO::PARAM_INT);
+        $stmt->bindParam(":CREATED_BY", $CREATED_BY, PDO::PARAM_INT);
+        $stmt->execute();
+        return $con->lastInsertId();
+    }
+
+    public function insertOrderDetail($FK_ID_ORDER, $FK_ID_PRODUCT, $QTD, $SALE_VALUE, $TOTAL_COST, $CREATED_BY)
+    {
+        $sql = "INSERT INTO SALE_DETAIL(FK_ID_ORDER, FK_ID_PRODUCT, QTD, SALE_VALUE, TOTAL_COST, CREATED_BY, CREATED_ON) VALUES (:FK_ID_ORDER, :FK_ID_PRODUCT, :QTD, :SALE_VALUE, :TOTAL_COST, :CREATED_BY, NOW())";
+        $con = $this->Connect();
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":FK_ID_ORDER", $FK_ID_ORDER, PDO::PARAM_INT);
+        $stmt->bindParam(":FK_ID_PRODUCT", $FK_ID_PRODUCT, PDO::PARAM_INT);
+        $stmt->bindParam(":QTD", $QTD, PDO::PARAM_STR);
+        $stmt->bindParam(":SALE_VALUE", $SALE_VALUE, PDO::PARAM_STR);
+        $stmt->bindParam(":TOTAL_COST", $TOTAL_COST, PDO::PARAM_STR);
+        $stmt->bindParam(":CREATED_BY", $CREATED_BY, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
-    public function editProduct($DESCRIPTION, $QUANTITY, $LOW_STOCK, $FK_ID_UNITY, $MEASURE, $COST, $SALE_VALUE, $FK_ID_PROVIDER, $OBSERVATION, $UPDATED_BY, $ID) {
+    public function getOrderDetail($FK_ID_ORDER)
+    {
+        $sql = "SELECT FK_ID_PRODUCT, QTD, SALE_VALUE, TOTAL_COST FROM SALE_DETAIL WHERE FK_ID_ORDER = :FK_ID_ORDER";
+        $con = $this->Connect();
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":FK_ID_ORDER", $FK_ID_ORDER, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function editProduct($DESCRIPTION, $QUANTITY, $LOW_STOCK, $FK_ID_UNITY, $MEASURE, $COST, $SALE_VALUE, $FK_ID_PROVIDER, $OBSERVATION, $UPDATED_BY, $ID)
+    {
         $sql = "UPDATE PRODUCT SET DESCRIPTION = :DESCRIPTION, QUANTITY = :QUANTITY, LOW_STOCK = :LOW_STOCK, FK_ID_UNITY = :FK_ID_UNITY, MEASURE = :MEASURE, COST = :COST, SALE_VALUE = :SALE_VALUE, FK_ID_PROVIDER = :FK_ID_PROVIDER, OBSERVATION = :OBSERVATION, MODIFIED_BY = :MODIFIED_BY, MODIFIED_ON = NOW() WHERE ID = :ID";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
@@ -29,14 +57,16 @@ class mSale extends mConnection {
         return $stmt->execute();
     }
 
-    public function getProducts() {
+    public function getProducts()
+    {
         $sql = "SELECT * FROM PRODUCT";
         $con = $this->Connect();
         $stmt = $con->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getProduct($ID) {
+    public function getProduct($ID)
+    {
         $sql = "SELECT * FROM PRODUCT INNER JOIN UNITY ON UNITY.ID = PRODUCT.FK_ID_UNITY WHERE PRODUCT.ID = :ID";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
@@ -45,21 +75,24 @@ class mSale extends mConnection {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getUnity() {
+    public function getUnity()
+    {
         $sql = "SELECT * FROM UNITY WHERE ACTIVE = 1";
         $con = $this->Connect();
         $stmt = $con->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getProviders() {
+    public function getProviders()
+    {
         $sql = "SELECT * FROM PROVIDER WHERE ACTIVE = 1";
         $con = $this->Connect();
         $stmt = $con->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getProviderName($ID) {
+    public function getProviderName($ID)
+    {
         $sql = "SELECT NAME FROM PROVIDER WHERE ID = :ID";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
@@ -68,7 +101,8 @@ class mSale extends mConnection {
         return $stmt->fetch(PDO::FETCH_ASSOC)['NAME'];
     }
 
-    public function createProvider($NAME, $PHONE, $MAIL, $CPF_CNPJ, $ZIPCODE, $STREET, $NUMBER, $NEIGHBORHOOD, $CITY_STATE, $CREATED_BY) {
+    public function createProvider($NAME, $PHONE, $MAIL, $CPF_CNPJ, $ZIPCODE, $STREET, $NUMBER, $NEIGHBORHOOD, $CITY_STATE, $CREATED_BY)
+    {
         $sql = "INSERT INTO PROVIDER(NAME, PHONE, MAIL, CPF_CNPJ, ZIPCODE, STREET, NUMBER, NEIGHBORHOOD, CITY_STATE, ACTIVE, CREATED_BY) VALUES(:NAME, :PHONE, :MAIL, :CPF_CNPJ, :ZIPCODE, :STREET, :NUMBER, :NEIGHBORHOOD, :CITY_STATE, 1, :CREATED_BY)";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
@@ -85,7 +119,8 @@ class mSale extends mConnection {
         return $stmt->execute();
     }
 
-    public function getAbrevMeasure($ID) {
+    public function getAbrevMeasure($ID)
+    {
         $sql = "SELECT ABREVIATION FROM UNITY WHERE ID = :ID";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
@@ -94,7 +129,8 @@ class mSale extends mConnection {
         return $stmt->fetch(PDO::FETCH_ASSOC)['ABREVIATION'];
     }
 
-    public function deleteProduct($ID) {
+    public function deleteProduct($ID)
+    {
         $sql = "DELETE FROM PRODUCT WHERE ID = :ID";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
@@ -102,4 +138,35 @@ class mSale extends mConnection {
         return $stmt->execute();
     }
 
+    public function getSaleDetails($ID_SALE_ORDER)
+    {
+        $sql = "SELECT * FROM sale_order INNER JOIN sale_detail ON sale_detail.FK_ID_ORDER = :ID_SALE_ORDER WHERE STATUS = 0";
+        $con = $this->Connect();
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":ID", $ID_SALE_ORDER, PDO::PARAM_INT);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getIdOrderByClient($FK_ID_CLIENT)
+    {
+        $sql = "SELECT ID FROM sale_order WHERE STATUS = 0 AND FK_ID_CLIENT = :FK_ID_CLIENT";
+        $con = $this->Connect();
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":FK_ID_CLIENT", $FK_ID_CLIENT, PDO::PARAM_INT);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function setSaleDetail($FK_ID_ORDER, $FK_ID_PRODUCT, $QTD, $SALE_VALUE, $TOTAL_COST, $CREATED_BY)
+    {
+        $sql = "INSERT INTO sale_detail (ID, FK_ID_ORDER, FK_ID_PRODUCT, QTD, SALE_VALUE, TOTAL_COST, CREATED_BY, CREATED_ON) VALUES (:FK_ID_ORDER, :FK_ID_PRODUCT, :QTD, :SALE_VALUE, :TOTAL_COST, :CREATED_BY)";
+        $con = $this->Connect();
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":FK_ID_ORDER", $FK_ID_ORDER, PDO::PARAM_INT);
+        $stmt->bindParam(":FK_ID_PRODUCT", $FK_ID_PRODUCT, PDO::PARAM_INT);
+        $stmt->bindParam(":QTD", $QTD, PDO::PARAM_STR);
+        $stmt->bindParam(":SALE_VALUE", $SALE_VALUE, PDO::PARAM_STR);
+        $stmt->bindParam(":TOTAL_COST", $TOTAL_COST, PDO::PARAM_STR);
+        $stmt->bindParam(":CREATED_BY", $CREATED_BY, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
 }
