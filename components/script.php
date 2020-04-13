@@ -10,3 +10,5 @@
 
 <script type="text/javascript" src="js/util.js"></script>
 <link rel="stylesheet" href="css/body.css">
+
+<link rel="stylesheet" href="css/input.css">

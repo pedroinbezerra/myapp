@@ -39,6 +39,7 @@ if (isset($_POST['createProvider'])) {
 
 if (isset($_POST['deleteProduct'])) {
     if ($mProduct->deleteProduct($_POST['id_product'])) {
+        $$products = $mProduct->getProducts();
         header('location: product.php?delete=1');
     } else {
         header('location: product.php?delete=0');
@@ -61,7 +62,7 @@ if (isset($_POST['deleteProduct'])) {
 
         <script type="text/javascript">
             $(document).ready(function () {
-                $('.money').mask('#.##0,00', {reverse: true});
+                $('.money').mask('#.##0.00', {reverse: true});
             });
         </script>
     </head>
@@ -88,25 +89,34 @@ if (isset($_POST['deleteProduct'])) {
         <center><br><div class="col-md-8"><div class="alert alert-success" role="alert">Produto editado com sucesso.</div></div><br></center>
     <?php } if (isset($_GET['edit']) && $_GET['edit'] == 0) { ?>
         <center><br><div class="col-md-8"><div class="alert alert-danger" role="alert">Erro ao editar produto.</div></div><br></center>
+    <?php } if (isset($_GET['refresh']) && $_GET['refresh'] == 1) { ?>
+        <center><br><div class="col-md-8"><div class="alert alert-success" role="alert">Lista de produtos atualizada.</div></div><br></center>
+    <?php } if (isset($_GET['refresh']) && $_GET['refresh'] == 0) { ?>
+        <center><br><div class="col-md-8"><div class="alert alert-success" role="alert">Erro ao atualizar a lista de produtos.</div></div><br></center>
     <?php } ?>
 
     <div class="form-group input-group col-md-12">
         <div class="col-md-2">
-            <!--Button trigger modal novo produto-->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newProduct">
-                Novo produto
-            </button>
+            <div class="row">
+                <!--Button trigger modal novo produto-->
+                <button type="button" class="btn btn-primary btn-row" data-toggle="modal" data-target="#newProduct">
+                    Novo produto
+                </button>
+                <form action="product.php" method="post">
+                    <button type="submit" class="btn btn-primary btn-row" name="refreshProductList">
+                        <i class="fas fa-sync"></i>
+                    </button>
+                </form>
+            </div>
         </div>
-        <div class="col-md-2">
-        </div>
-        <div class="col-md-4"></div>
+        <div class="col-md-6"></div>
         <div class="col-md-4">
             <input name="consulta" id="txt_consulta" placeholder="Buscar" type="text" class="form-control">
         </div>
     </div>
     <br>
     <!--Tabela de produtos-->
-    <table id="tabela" class="table table-hover">
+    <table id="tabela" class="table table-hover table-responsive-xl">
         <thead>
             <tr>
                 <th scope="col"><center>ID</center></th>
@@ -256,20 +266,21 @@ if (isset($_POST['deleteProduct'])) {
 <!-- Modal de informações do produto-->
 <div class="modal fade" id="infoProduct" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Informações do produto</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <form action="action">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Informações do produto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="bodyInfoProduct">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
+                </div>
             </div>
-            <div class="modal-body" id="bodyInfoProduct">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -337,7 +348,7 @@ if (isset($_POST['deleteProduct'])) {
                             </div>
                             <div class="col-md-4">
                                 <label for="new_phone">Telefone/Celular</label>
-                                <input type="number" name="phone" id="new_phone" placeholder="Telefone/Celular" class="form-control phone" required="">
+                                <input type="text" name="phone" id="new_phone" placeholder="Telefone/Celular" class="form-control phone" required="">
                             </div>
                             <div class="col-md-3">
                                 <label for="type">Tipo</label>
@@ -352,7 +363,7 @@ if (isset($_POST['deleteProduct'])) {
                         <div class="row">
                             <div class="col-md-4">
                                 <label for="new_cpf_cnpj">CNPJ/CPF</label>
-                                <input type="number" name="cpf_cnpj" id="new_cpf_cnpj" placeholder="CNPJ/CPF" class="form-control cpf_cnpj" required="">
+                                <input type="text" name="cpf_cnpj" id="new_cpf_cnpj" placeholder="CNPJ/CPF" class="form-control cpf_cnpj" required="">
                             </div>
                             <div class="col-md-8">
                                 <label for="new_mail">E-mail</label>
