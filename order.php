@@ -15,40 +15,11 @@ $unitys = $mProduct->getUnity();
 $providers = $mProduct->getProviders();
 $products = $mProduct->getProducts();
 
+$orders = $mOrder->getOrders();
+
 $CREATED_BY = 1;
 
-if (isset($_POST['createProduct'])) {
-    if ($mProduct->createProduct($_POST['description'], $_POST['quantity'], $_POST['low_stock'], $_POST['unity'], $_POST['measure'], $_POST['cost'], $_POST['sale_value'], $_POST['provider'], $_POST['observation'], $CREATED_BY)) {
-        header('location: product.php?create=1');
-    } else {
-        header('location: product.php?create=0');
-    }
-}
 
-if (isset($_POST['editProduct'])) {
-    if ($mProduct->editProduct($_POST['description'], $_POST['quantity'], $_POST['low_stock'], $_POST['unity'], $_POST['measure'], $_POST['cost'], $_POST['sale_value'], $_POST['provider'], $_POST['observation'], $CREATED_BY, $_POST['id_product'])) {
-        header('location: product.php?edit=1');
-    } else {
-        header('location: product.php?edit=0');
-    }
-}
-
-if (isset($_POST['createProvider'])) {
-    if ($mProvider->createProvider($_POST['type'], $_POST['name'], $_POST['phone'], $_POST['mail'], $_POST['cpf_cnpj'], $_POST['zipcode'], $_POST['street'], $_POST['number'], $_POST['neighborhood'], $_POST['city_state'], $CREATED_BY)) {
-        header('location: product.php?provider=1');
-    } else {
-        header('location: product.php?provider=0');
-    }
-}
-
-if (isset($_POST['deleteProduct'])) {
-    if ($mProduct->deleteProduct($_POST['id_product'])) {
-        $$products = $mProduct->getProducts();
-        header('location: product.php?delete=1');
-    } else {
-        header('location: product.php?delete=0');
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -61,7 +32,7 @@ if (isset($_POST['deleteProduct'])) {
 
     <?php require_once('components/script.php'); ?>
     <script type="text/javascript" src="vendor/jquery.quicksearch.js"></script>
-    <script type="text/javascript" src="js/product.js"></script>
+    <script type="text/javascript" src="js/order.js"></script>
     <link rel="stylesheet" href="css/button.css" />
 
     <script type="text/javascript">
@@ -80,27 +51,7 @@ if (isset($_POST['deleteProduct'])) {
     <center>
         <h1>Pedidos</h1>
     </center>
-
-
-        <div class="row">
-            <div class="col-md-3">
-                <label for="searchType"><strong>Buscar por</strong></label><br>
-                <select name="searchType" id="searchType" class="form-control">
-                    <option value="0">Pedido</option>
-                    <option value="1">Cliente</option>
-                    <option value="2">Data</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label>&nbsp;</label><br>
-                <input type="text" name="searchArgument" class="form-control" required="" placeholder="Código do pedido, cliente ou data">
-            </div>
-            <div class="col-md-2">
-                <label>&nbsp;</label><br>
-                <input type="button" class="btn btn-primary" id="btnSubmitSearch" value="Buscar">
-            </div>
-        </div>
-        <br>
+    <br>
 
     <?php if (isset($_GET['create']) && $_GET['create'] == 1) { ?>
         <center><br>
@@ -111,20 +62,7 @@ if (isset($_POST['deleteProduct'])) {
     <?php } ?>
 
     <div class="form-group input-group col-md-12">
-        <div class="col-md-2">
-            <div class="row">
-                <!--Button trigger modal novo produto-->
-                <button type="button" class="btn btn-primary btn-row" data-toggle="modal" data-target="#newProduct">
-                    Novo produto
-                </button>
-                <form action="product.php" method="post">
-                    <button type="submit" class="btn btn-primary btn-row" name="refreshProductList">
-                        <i class="fas fa-sync"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-        <div class="col-md-6"></div>
+        <div class="col-md-8"></div>
         <div class="col-md-4">
             <input name="consulta" id="txt_consulta" placeholder="Buscar" type="text" class="form-control">
         </div>
@@ -135,54 +73,65 @@ if (isset($_POST['deleteProduct'])) {
         <thead>
             <tr>
                 <th scope="col">
-                    <center>ID</center>
+                    <center>COD. PEDIDO</center>
                 </th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Em estoque</th>
-                <th scope="col">Valor de venda</th>
-                <th scope="col">Fornecedor</th>
-                <th scope="col">Status</th>
+                <th scope="col">CLIENTE</th>
+                <th scope="col">TOTAL</th>
+                <th scope="col">DATA CRIAÇÃO</th>
+                <th scope="col">
+                    <center>COD. ATENDENTE</center>
+                </th>
+                <th scope="col">STATUS</th>
                 <th scope="col"></th>
             </tr>
         </thead>
 
         <tbody>
-            <?php foreach ($products as $p) { ?>
+            <?php foreach ($orders as $o) {
+
+                $total = explode('.', $mOrder->getOrderTotalCost($o['ID']));
+                $total = $total[0] . "." . substr($total[1], 0, 2);
+
+            ?>
                 <tr>
                     <td>
-                        <center><?= $p['ID'] ?></center>
+                        <center><?= $o['ID'] ?></center>
                     </td>
-                    <td><?= $p['DESCRIPTION'] ?></td>
-                    <td><?= $p['QUANTITY'] . ' ' . $mProduct->getAbrevMeasure($p['FK_ID_UNITY']) ?> </td>
-                    <td>R$ <?= $p['SALE_VALUE'] ?></td>
-                    <td><?= $mProduct->getProviderName($p['FK_ID_PROVIDER']) ?></td>
+                    <td><?= $mProvider->getProvider($o['FK_ID_CLIENT'])['NAME'] ?> </td>
+                    <td>R$ <?= $total ?></td>
+                    <td><?= $o['CREATED_ON'] ?></td>
+                    <td>
+                        <center><?= $o['CREATED_BY'] ?></center>
+                    </td>
 
-                    <?php if ($p['QUANTITY'] > $p['LOW_STOCK']) { ?>
+                    <?php if ($o['STATUS'] == 0) { ?>
                         <td>
-                            <h6><span class="badge badge-success">Em estoque</span></h6>
+                            <h6><span class="badge badge-success">Aberto</span></h6>
                         </td>
-                    <?php } else if ($p['QUANTITY'] <= $p['LOW_STOCK'] && $p['QUANTITY'] != 0) { ?>
+                    <?php } else if ($o['STATUS'] == 1) { ?>
                         <td>
-                            <h6><span class="badge badge-warning">Estoque baixo</span></h6>
+                            <h6><span class="badge badge-warning">Fechado</span></h6>
                         </td>
-                    <?php } else if ($p['QUANTITY'] <= 0) { ?>
+                    <?php } else if ($o['STATUS'] == 2) { ?>
                         <td>
-                            <h6><span class="badge badge-danger">Indisponível</span></h6>
+                            <h6><span class="badge badge-primary">Finalizado</span></h6>
                         </td>
                     <?php } ?>
 
                     <td>
                         <div class="row">
                             <div>
-                                <button type="button" class="btn btn-primary btn-row" data-toggle="modal" data-target="#infoProduct" title="Detalhes do produto" onclick="productInfo(<?= $p['ID'] ?>)">
+                                <button type="button" class="btn btn-primary btn-row" data-toggle="modal" data-target="#infoOrder" title="Detalhes do pedido" onclick="orderInfo(<?= $o['ID'] ?>)">
                                     <i class="fas fa-align-center"></i>
                                 </button>
 
-                                <button type="button" class="btn btn-primary btn-row" data-toggle="modal" data-target="#editProduct" title="Editar produto" onclick="productEdit(<?= $p['ID'] ?>)">
-                                    <i class="fas fa-pen"></i>
-                                </button>
+                                <?php if ($o['STATUS'] == 0) { ?>
+                                    <button type="button" class="btn btn-warning btn-row" data-toggle="modal" data-target="#editOrder" title="Editar pedido" onclick="ordertEdit(<?= $o['ID'] ?>)">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                <?php } ?>
 
-                                <button type="button" class="btn btn-danger btn-row" data-toggle="modal" data-target="#deleteProduct" title="Excluir produto" onclick="productDelete(<?= $p['ID'] ?>)">
+                                <button type="button" class="btn btn-danger btn-row" data-toggle="modal" data-target="#deleteOrder" title="Excluir pedido" onclick="orderDelete(<?= $o['ID'] ?>)">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -191,115 +140,20 @@ if (isset($_POST['deleteProduct'])) {
                 </tr>
             <?php } ?>
         </tbody>
-
     </table>
 
-    <!-- Modal novo produto-->
-    <div class="modal fade" id="newProduct" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <form action="product.php" method="post">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Novo produto</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <label for="description">Descrição</label>
-                                    <input type="text" name="description" id="new_description" placeholder="Descrição do produto" class="form-control" required="">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="quantity">Quantidade</label>
-                                    <input type="number" name="quantity" id="new_quantity" placeholder="Quantidade" class="form-control" required="">
-                                </div>
-                            </div>
-
-                            <br>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label for="measure">Medida:</label>
-                                    <input type="number" name="measure" id="new_measure" placeholder="Medida" class="form-control">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="unity">Unidade de medida</label>
-                                    <select name="unity" id="new_unity" class="form-control" required="" onchange="sval()">
-                                        <option value="" selected="" hidden="" disabled="">Selecione</option>
-                                        <?php foreach ($unitys as $u) { ?>
-                                            <option value="<?= $u['ID'] ?>"><?= $mUtil->autoCaption($u['NAME']) ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="cost">Custo</label>
-                                    <input type="text" name="cost" id="new_cost" placeholder="Valor de custo" class="form-control money" required="">
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="sale_value">Valor de venda</label>
-                                    <input type="text" name="sale_value" id="new_sale_value" placeholder="Valor de venda" class="form-control money" required="">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="low_stock">Estoque baixo</label>
-                                    <input type="number" name="low_stock" id="new_low_stock" placeholder="Quantidade para alerta de estoque baixo" class="form-control" required="">
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col-md-10">
-                                    <label for="provider">Fornecedor</label>
-                                    <select name="provider" id="new_provider" class="form-control" required="">
-                                        <option value="" selected="" hidden="" disabled="">Selecione</option>
-                                        <option value="0">Sem fornecedor cadastrado</option>
-                                        <?php foreach ($providers as $p) { ?>
-                                            <option value="<?= $p['ID'] ?>"><?= $p['NAME'] . " - " . $p['CPF_CNPJ'] ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
-                                    <br>
-                                    <center>
-                                        <button id="new_newProvider" type="button" class="btn btn-primary btn-row-top" data-toggle="modal" data-target="#createProvider" title="Cadastrar novo fornecedor" onclick="openModalOnModal('newProduct', 'createProvider')">
-                                            <i class="fas fa-plus-square"></i>
-                                        </button>
-                                    </center>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="observation">Observações</label>
-                                    <textarea name="observation" id="new_observation" class="form-control"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" name="createProduct" class="btn btn-success" value="Salvar">
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de informações do produto-->
-    <div class="modal fade" id="infoProduct" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Modal de informações do pedido-->
+    <div class="modal fade" id="infoOrder" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <form action="action">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Informações do produto</h5>
+                        <h5 class="modal-title">Informações do pedido</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body" id="bodyInfoProduct">
+                    <div class="modal-body" id="bodyInfoOrder">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
@@ -309,30 +163,30 @@ if (isset($_POST['deleteProduct'])) {
         </div>
     </div>
 
-    <!-- Modal editar produto-->
-    <div class="modal fade" id="editProduct" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Modal editar pedido-->
+    <div class="modal fade" id="editOrder" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <form action="product.php" method="post">
+                <form action="order.php" method="post">
                     <div class="modal-header">
-                        <h5 class="modal-title">Editar produto</h5>
+                        <h5 class="modal-title">Editar pedido</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body" id="bodyEditProduct">
+                    <div class="modal-body" id="bodyEditOrder">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" name="editProduct" class="btn btn-success" value="Salvar alterações">
+                        <input type="submit" name="editOrder" class="btn btn-success" value="Salvar alterações">
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal excluir produto-->
-    <div class="modal fade" id="deleteProduct" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Modal excluir pedido-->
+    <div class="modal fade" id="deleteOrder" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
                 <form action="product.php" method="post">
