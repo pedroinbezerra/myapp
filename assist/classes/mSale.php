@@ -140,7 +140,7 @@ class mSale extends mConnection
 
     public function getSaleDetails($ID_SALE_ORDER)
     {
-        $sql = "SELECT * FROM sale_order INNER JOIN sale_detail ON sale_detail.FK_ID_ORDER = :ID_SALE_ORDER WHERE STATUS = 0";
+        $sql = "SELECT * FROM sale_order INNER JOIN SALE_DETAIL ON SALE_DETAIL.FK_ID_ORDER = :ID_SALE_ORDER WHERE STATUS = 0";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":ID", $ID_SALE_ORDER, PDO::PARAM_INT);

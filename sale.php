@@ -201,7 +201,7 @@ if (isset($_POST['deleteProduct'])) {
                     <center>
                         <h4><label for="inCart"><strong>No carrinho</strong></label></h4>
                     </center>
-                    <table id="inCart" class="table table-striped">
+                    <table id="inCart" class="table table-striped table-responsive-xl">
                         <thead>
                             <tr>
                                 <th scope="col">Produto</th>

@@ -2,27 +2,45 @@
 
 class mOrder extends mConnection
 {
-    public function getAllOrders()
+    public function getOrders()
     {
-        $sql = "SELECT * FROM SALE_ORDER INNER JOIN SALE_DETAILS ON SALE_DETAILS.FK_ID_ORDER = SALE_ORDER.ID";
+        $sql = "SELECT * FROM SALE_ORDER";
         $con = $this->Connect();
         $stmt = $con->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    public function getOrderById($ID_ORDER)
-    {
-        $sql = "SELECT * FROM SALE_ORDER INNER JOIN SALE_DETAILS ON SALE_DETAILS.FK_ID_ORDER = SALE_ORDER.ID WHERE ID = :ID_ORDER";
+    
+    public function getSaleDetails($ORDER_ID){
+        $sql = "SELECT * FROM SALE_DETAIL WHERE FK_ID_ORDER = :FK_ID_ORDER";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
-        $stmt->bindParam(":DESCRIPTION", $DESCRIPTION, PDO::PARAM_STR);
+        $stmt->bindParam(":FK_ID_ORDER", $ORDER_ID, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getOrderTotalCost($ORDER_ID){
+        $sql = "SELECT SUM(TOTAL_COST) TOTAL FROM SALE_DETAIL WHERE FK_ID_ORDER = :FK_ID_ORDER";
+        $con = $this->Connect();
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":FK_ID_ORDER", $ORDER_ID, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['TOTAL'];
+    }
+
+    public function getOrder($ID_ORDER)
+    {
+        $sql = "SELECT * FROM SALE_ORDER WHERE ID = :ID";
+        $con = $this->Connect();
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":ID", $ID_ORDER, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getOrderByClient($ID_ORDER)
     {
-        $sql = "SELECT * FROM SALE_ORDER INNER JOIN SALE_DETAILS ON SALE_DETAILS.FK_ID_ORDER = SALE_ORDER.ID WHERE ID = :ID_ORDER";
+        $sql = "SELECT * FROM SALE_ORDER INNER JOIN SALE_DETAIL ON SALE_DETAIL.FK_ID_ORDER = SALE_ORDER.ID WHERE ID = :ID_ORDER";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":ID_ORDER", $ID_ORDER, PDO::PARAM_INT);
@@ -33,7 +51,7 @@ class mOrder extends mConnection
     public function getOrderByDate($DATE)
     {
         $DATE = $DATE . "%";
-        $sql = "SELECT * FROM SALE_ORDER INNER JOIN SALE_DETAILS ON SALE_DETAILS.FK_ID_ORDER = SALE_ORDER.ID WHERE CREATED_ON LIKE :DATE";
+        $sql = "SELECT * FROM SALE_ORDER INNER JOIN SALE_DETAIL ON SALE_DETAIL.FK_ID_ORDER = SALE_ORDER.ID WHERE CREATED_ON LIKE :DATE";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":DATE", $DATE, PDO::PARAM_STR);
