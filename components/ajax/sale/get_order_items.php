@@ -20,7 +20,7 @@ if ($_POST['order_id'] == '' || $_POST['order_id'] == null) {
 
     foreach ($orderDetails as $item) {
 
-        $items = $items . "<tr><td>" . $item['FK_ID_PRODUCT'] . "</td><td>" . $item['QTD'] . "</td><td>" . $item['SALE_VALUE'] . "</td><td>" . $item['TOTAL_COST'] . "</td></tr>";
+        $items = $items . "<tr><td>" . $item['DESCRIPTION'] . "</td><td>" . $item['QTD'] . "</td><td>" . $item['SALE_VALUE'] . "</td><td>" . $item['TOTAL_COST'] . "</td></tr>";
     }
 
     echo $items;

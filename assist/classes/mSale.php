@@ -30,7 +30,7 @@ class mSale extends mConnection
 
     public function getOrderDetail($FK_ID_ORDER)
     {
-        $sql = "SELECT FK_ID_PRODUCT, QTD, SALE_VALUE, TOTAL_COST FROM SALE_DETAIL WHERE FK_ID_ORDER = :FK_ID_ORDER";
+        $sql = "SELECT PRODUCT.DESCRIPTION, QTD, SALE_DETAIL.SALE_VALUE, TOTAL_COST FROM SALE_DETAIL INNER JOIN PRODUCT ON PRODUCT.ID = SALE_DETAIL.FK_ID_PRODUCT WHERE FK_ID_ORDER = :FK_ID_ORDER";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":FK_ID_ORDER", $FK_ID_ORDER, PDO::PARAM_INT);

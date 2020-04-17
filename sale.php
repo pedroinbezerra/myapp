@@ -39,7 +39,7 @@ if (isset($_POST['deleteProduct'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $_SESSION['app_title'] ?> - Venda</title>
+    <title><?= $_SESSION['app_title'] ?> - Novo pedido</title>
 
     <?php require_once('components/script.php'); ?>
     <script type="text/javascript" src="vendor/jquery.quicksearch.js"></script>
@@ -60,7 +60,7 @@ if (isset($_POST['deleteProduct'])) {
     <?php require_once('./components/navbar.php'); ?>
     <br>
     <center>
-        <h1>Venda de produtos</h1>
+        <h1>Novo pedido</h1>
     </center>
 
     <?php if (isset($_GET['create']) && $_GET['create'] == 1) { ?>

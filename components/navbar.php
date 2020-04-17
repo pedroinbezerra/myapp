@@ -33,7 +33,7 @@
 
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
                         <a class="dropdown-item" href="sale.php">Nova pedido</a>
-                        <a class="dropdown-item" href="#">Buscar pedido</a>
+                        <a class="dropdown-item" href="order.php">Buscar pedido</a>
                     </div>
                 </div>
             </li>
