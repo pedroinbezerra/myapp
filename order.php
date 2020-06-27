@@ -87,18 +87,13 @@ $CREATED_BY = 1;
         </thead>
 
         <tbody>
-            <?php foreach ($orders as $o) {
-
-                $total = explode('.', $mOrder->getOrderTotalCost($o['ID']));
-                $total = $total[0] . "." . substr($total[1], 0, 2);
-
-            ?>
+            <?php foreach ($orders as $o) { ?>
                 <tr>
                     <td>
                         <center><?= $o['ID'] ?></center>
                     </td>
                     <td><?= $mProvider->getProvider($o['FK_ID_CLIENT'])['NAME'] ?> </td>
-                    <td>R$ <?= $total ?></td>
+                    <td>R$ <?= $mOrder->getOrderTotalCost($o['ID']) ?></td>
                     <td><?= $o['CREATED_ON'] ?></td>
                     <td>
                         <center><?= $o['CREATED_BY'] ?></center>

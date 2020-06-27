@@ -39,7 +39,7 @@ if (isset($_POST['id_order'])) {
             </div>
             <div class="col-md-4">
                 <label for="description">Total</label>
-                <input type="text" name="description" id="info_description" value="R$ <?= substr($mOrder->getOrderTotalCost($order['ID']), 0,  5) ?>" class="form-control" readonly="">
+                <input type="text" name="description" id="info_description" value="R$ <?= $mOrder->getOrderTotalCost($order['ID']) ?>" class="form-control" readonly="">
             </div>
         </div>
         <hr>
@@ -97,8 +97,8 @@ if (isset($_POST['id_order'])) {
                         <tr>
                             <td><?= $mProduct->getProduct($item['FK_ID_PRODUCT'])['DESCRIPTION'] ?></td>
                             <td><?= $item['QTD'] ?></td>
-                            <td><?= $item['SALE_VALUE'] ?></td>
-                            <td><?= $item['TOTAL_COST'] ?></td>
+                            <td><?= "R$ ". $item['SALE_VALUE'] ?></td>
+                            <td><?= "R$ ". $item['TOTAL_COST'] ?></td>
                         </tr>
                     <?php } ?>
                 </tbody>

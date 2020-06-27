@@ -9,8 +9,9 @@ class mOrder extends mConnection
         $stmt = $con->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
-    public function getSaleDetails($ORDER_ID){
+
+    public function getSaleDetails($ORDER_ID)
+    {
         $sql = "SELECT * FROM SALE_DETAIL WHERE FK_ID_ORDER = :FK_ID_ORDER";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
@@ -19,13 +20,20 @@ class mOrder extends mConnection
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getOrderTotalCost($ORDER_ID){
+    public function getOrderTotalCost($ORDER_ID)
+    {
         $sql = "SELECT SUM(TOTAL_COST) TOTAL FROM SALE_DETAIL WHERE FK_ID_ORDER = :FK_ID_ORDER";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":FK_ID_ORDER", $ORDER_ID, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC)['TOTAL'];
+        $total = $stmt->fetch(PDO::FETCH_ASSOC)['TOTAL'];
+        $total = explode('.', $total);
+        if (isset($total[1])) {
+            return $total = $total[0] . "." . substr($total[1], 0, 2);
+        } else {
+            return $total = $total[0] . ".00";
+        }
     }
 
     public function getOrder($ID_ORDER)

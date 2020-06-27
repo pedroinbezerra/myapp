@@ -32,7 +32,7 @@
                     <a class="nav-link dropdown-toggle" id="dropdownMenuOffset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="10,20">Vendas</a>
 
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuOffset">
-                        <a class="dropdown-item" href="sale.php">Nova pedido</a>
+                        <a class="dropdown-item" href="sale.php">Novo pedido</a>
                         <a class="dropdown-item" href="order.php">Pedidos</a>
                     </div>
                 </div>

@@ -16,8 +16,14 @@ $clients = $mClient->getClients();
 
 $CREATED_BY = 1;
 
-if (isset($_POST['editProduct'])) {
-    if ($mProduct->editProduct($_POST['description'], $_POST['quantity'], $_POST['low_stock'], $_POST['unity'], $_POST['measure'], $_POST['cost'], $_POST['sale_value'], $_POST['provider'], $_POST['observation'], $CREATED_BY, $_POST['id_product'])) {
+if (isset($_POST['finalizeSale'])) {
+    $on_demand = 0;
+    
+    if(isset($_POST['on_demand'])){
+        $on_demand = 1;
+    }
+
+    if ($mProduct->editProduct($_POST['description'], $_POST['quantity'], $_POST['low_stock'], $_POST['unity'], $_POST['measure'], $_POST['cost'], $_POST['sale_value'], $on_demand, $_POST['provider'], $_POST['observation'], $CREATED_BY, $_POST['id_product'])) {
         header('location: product.php?edit=1');
     } else {
         header('location: product.php?edit=0');
@@ -120,7 +126,7 @@ if (isset($_POST['deleteProduct'])) {
         </center>
     <?php } ?>
 
-    <form action="product.php" method="post">
+    <form action="sale.php" method="post">
         <div class="modal-header">
             <h5 class="modal-title">Novo pedido</h5>
         </div>
@@ -145,7 +151,7 @@ if (isset($_POST['deleteProduct'])) {
                 </div>
 
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label for="product"><strong>Produto</strong></label>
                         <select id="product" class="form-control" onchange="getProductData(this.value)">
                             <option value="" disabled="" hidden="" selected="">Selecione</option>
@@ -154,16 +160,29 @@ if (isset($_POST['deleteProduct'])) {
                             <?php } ?>
                         </select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <label for="quantity"><strong>Quantidade</strong></label>
                         <div class="input-group">
-                            <input type="number" id="qtd_product_unity" name="qtd_product_unity" class="form-control" placeholder="quantidade" required="" onkeyup="recalculatePrice('qtd_product_unity', 'product_price', 'product_price_total')">
+                            <input type="number" id="qtd_product_unity" name="qtd_product_unity" class="form-control" placeholder="quantidade" required="" onkeyup="changeProductUnity()" onchange="changeProductUnity()">
                             <div class="input-group-prepend">
-                                <div class="input-group-text" id="product_unity"></div>
+                                <div class="input-group-text" id="product_unity_sale"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
+                        <label for="quantity"><strong>Em estoque</strong></label>
+                        <div class="input-group">
+                            <textarea type="number" id="qtd_product_unity_stock" class="form-control textarea_input" readonly="" rows="1"></textarea>
+                            <div class="input-group-prepend">
+                                <div class="input-group-text" id="product_unity_stock"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+                <div class="row">
+                    <div class="col-md-4">
                         <label for="product_cost"><strong>Preço de custo</strong></label>
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -172,16 +191,16 @@ if (isset($_POST['deleteProduct'])) {
                             <input type="text" id="product_cost" value="" class="form-control money" disabled="">
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <label for="price"><strong>Preço final</strong></label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">R$</div>
                             </div>
-                            <input type="text" id="product_price" value="" class="form-control money" required="">
+                            <input type="text" id="product_price" value="" class="form-control money" required="" onkeyup="changeFinalPrice()" onchange="changeFinalPrice()">
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <label for="price"><strong>Total</strong></label>
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -191,7 +210,7 @@ if (isset($_POST['deleteProduct'])) {
                         </div>
                     </div>
                     <div class="col-md-1">
-                        <button type="button" class="btn btn-info" style="margin-top: 32px" title="Adicionar ao carrinho" onclick="addToCart()"><i class="fa fa-plus"></i></button>
+                        <button type="button" class="btn btn-info addToCart" style="margin-top: 32px" title="Adicionar ao carrinho" onclick="addToCart()"><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
 
@@ -221,7 +240,7 @@ if (isset($_POST['deleteProduct'])) {
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-            <input type="submit" name="createProduct" class="btn btn-success" value="Salvar">
+            <input type="submit" name="finalizeSale" class="btn btn-success" value="Finalizar">
         </div>
     </form>
 </body>

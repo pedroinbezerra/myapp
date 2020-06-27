@@ -66,13 +66,19 @@ if (isset($_POST['id_product'])) {
         </div>
         <br>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label for="low_stock">Estoque baixo</label>
                 <input type="number" name="low_stock" id="new_low_stock" value="<?= $p['LOW_STOCK'] ?>" class="form-control" required="">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label for="sale_value">Valor de venda</label>
                 <input type="text" name="sale_value" id="edit_sale_value" value="<?= $p['SALE_VALUE'] ?>" class="form-control money" required="">
+            </div>
+            <div class="col-md-4">
+                <label for="on_demand">Produzido sob demanda</label>
+                <center>
+                    <input type="checkbox" name="on_demand" id="on_demand" class="form-check-input check_input" title="Produzido sob demanda" <?php if ($p['ON_DEMAND'] == 1) { ?>checked="true" <?php } ?>>
+                </center>
             </div>
         </div>
         <br>
@@ -81,9 +87,9 @@ if (isset($_POST['id_product'])) {
                 <label for="provider">Fornecedor</label>
                 <select name="provider" id="edit_provider" class="form-control" required="">
                     <?php if ($p['FK_ID_PROVIDER'] == 0) { ?>
-                        <option value="0" selected="">Sem fornecedor cadastrado</option>
                         <?php
-                    } foreach ($providers as $provider) {
+                    } ?>
+                    <?php foreach ($providers as $provider) {
                         if ($provider['ID'] == $p['FK_ID_PROVIDER']) {
                             ?>
                             <option value="<?= $provider['ID'] ?>" selected=""><?= $provider['NAME'] . " - " . $provider['CPF_CNPJ'] ?></option>
