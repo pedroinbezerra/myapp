@@ -38,9 +38,9 @@ class mSale extends mConnection
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function editProduct($DESCRIPTION, $QUANTITY, $LOW_STOCK, $FK_ID_UNITY, $MEASURE, $COST, $SALE_VALUE, $FK_ID_PROVIDER, $OBSERVATION, $UPDATED_BY, $ID)
+    public function editProduct($DESCRIPTION, $QUANTITY, $LOW_STOCK, $FK_ID_UNITY, $MEASURE, $COST, $SALE_VALUE, $ON_DEMAND, $FK_ID_PROVIDER, $OBSERVATION, $UPDATED_BY, $ID)
     {
-        $sql = "UPDATE PRODUCT SET DESCRIPTION = :DESCRIPTION, QUANTITY = :QUANTITY, LOW_STOCK = :LOW_STOCK, FK_ID_UNITY = :FK_ID_UNITY, MEASURE = :MEASURE, COST = :COST, SALE_VALUE = :SALE_VALUE, FK_ID_PROVIDER = :FK_ID_PROVIDER, OBSERVATION = :OBSERVATION, MODIFIED_BY = :MODIFIED_BY, MODIFIED_ON = NOW() WHERE ID = :ID";
+        $sql = "UPDATE PRODUCT SET DESCRIPTION = :DESCRIPTION, QUANTITY = :QUANTITY, LOW_STOCK = :LOW_STOCK, FK_ID_UNITY = :FK_ID_UNITY, MEASURE = :MEASURE, COST = :COST, SALE_VALUE = :SALE_VALUE, ON_DEMAND = :ON_DEMAND, FK_ID_PROVIDER = :FK_ID_PROVIDER, OBSERVATION = :OBSERVATION, MODIFIED_BY = :MODIFIED_BY, MODIFIED_ON = NOW() WHERE ID = :ID";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":DESCRIPTION", $DESCRIPTION, PDO::PARAM_STR);
@@ -50,6 +50,7 @@ class mSale extends mConnection
         $stmt->bindParam(":MEASURE", $MEASURE, PDO::PARAM_STR);
         $stmt->bindParam(":COST", $COST, PDO::PARAM_STR);
         $stmt->bindParam(":SALE_VALUE", $SALE_VALUE, PDO::PARAM_STR);
+        $stmt->bindParam(":ON_DEMAND", $ON_DEMAND, PDO::PARAM_INT);
         $stmt->bindParam(":FK_ID_PROVIDER", $FK_ID_PROVIDER, PDO::PARAM_INT);
         $stmt->bindParam(":OBSERVATION", $OBSERVATION, PDO::PARAM_STR);
         $stmt->bindParam(":MODIFIED_BY", $UPDATED_BY, PDO::PARAM_INT);
@@ -57,9 +58,14 @@ class mSale extends mConnection
         return $stmt->execute();
     }
 
-    public function getProducts()
+    public function getProducts($limit = 20)
     {
-        $sql = "SELECT * FROM PRODUCT";
+        if($limit == 0){
+            $sql_limit = "";
+        } else {
+            $sql_limit = " LIMIT " . $limit; 
+        }
+        $sql = "SELECT * FROM PRODUCT" . $sql_limit;
         $con = $this->Connect();
         $stmt = $con->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

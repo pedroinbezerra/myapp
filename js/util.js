@@ -35,3 +35,11 @@ document.addEventListener('DOMContentLoaded', function () {
         $(".alert").fadeOut();
     }, 5000);
 }, false);
+
+function negativeNumber(inputId){
+    let value = document.getElementById(inputId).value;
+    if(value < 0){
+        document.getElementById(inputId).value = 0;
+        alert("Permitida a entrada somente de números positivos");
+    }
+}

@@ -14,7 +14,13 @@ $products = $mProduct->getProducts();
 $CREATED_BY = 1;
 
 if (isset($_POST['createProduct'])) {
-    if ($mProduct->createProduct($_POST['description'], $_POST['quantity'], $_POST['low_stock'], $_POST['unity'], $_POST['measure'], $_POST['cost'], $_POST['sale_value'], $_POST['provider'], $_POST['observation'], $CREATED_BY)) {
+    $on_demand = 0;
+    
+    if(isset($_POST['on_demand'])){
+        $on_demand = 1;
+    }
+
+    if ($mProduct->createProduct($_POST['description'], $_POST['quantity'], $_POST['low_stock'], $_POST['unity'], $_POST['measure'], $_POST['cost'], $_POST['sale_value'], $on_demand, $_POST['provider'], $_POST['observation'], $CREATED_BY)) {
         header('location: product.php?create=1');
     } else {
         header('location: product.php?create=0');
@@ -22,7 +28,13 @@ if (isset($_POST['createProduct'])) {
 }
 
 if (isset($_POST['editProduct'])) {
-    if ($mProduct->editProduct($_POST['description'], $_POST['quantity'], $_POST['low_stock'], $_POST['unity'], $_POST['measure'], $_POST['cost'], $_POST['sale_value'], $_POST['provider'], $_POST['observation'], $CREATED_BY, $_POST['id_product'])) {
+    $on_demand = 0;
+    
+    if(isset($_POST['on_demand'])){
+        $on_demand = 1;
+    }
+
+    if ($mProduct->editProduct($_POST['description'], $_POST['quantity'], $_POST['low_stock'], $_POST['unity'], $_POST['measure'], $_POST['cost'], $_POST['sale_value'], $on_demand, $_POST['provider'], $_POST['observation'], $CREATED_BY, $_POST['id_product'])) {
         header('location: product.php?edit=1');
     } else {
         header('location: product.php?edit=0');
@@ -137,7 +149,6 @@ if (isset($_POST['deleteProduct'])) {
                         <label for="provider">Fornecedor</label>
                         <select name="provider" id="new_provider" class="form-control" required="">
                             <option value="" selected="" hidden="" disabled="">Selecione</option>
-                            <option value="0">Sem fornecedor cadastrado</option>
                             <?php foreach ($providers as $p) { ?>
                                 <option value="<?= $p['ID'] ?>"><?= $p['NAME'] . " - " . $p['CPF_CNPJ'] ?></option>
                             <?php } ?>                                      

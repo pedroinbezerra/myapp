@@ -9,12 +9,33 @@ $mUtil = new mUtil();
 
 $unitys = $mProduct->getUnity();
 $providers = $mProduct->getProviders();
-$products = $mProduct->getProducts();
+
+if(isset($_POST['limitSelect'])){
+    $limit = $_POST['limitSelect'];
+    if($limit == 0){
+        $_SESSION['limitSelected'] = "todos os";
+    } else{
+        $_SESSION['limitSelected'] = $limit;
+    }
+    
+
+    $products = $mProduct->getProducts($limit);
+} else{
+    $_SESSION['limitSelected'] = 20;
+    $products = $mProduct->getProducts();
+}
+
 
 $CREATED_BY = 1;
 
 if (isset($_POST['createProduct'])) {
-    if ($mProduct->createProduct($_POST['description'], $_POST['quantity'], $_POST['low_stock'], $_POST['unity'], $_POST['measure'], $_POST['cost'], $_POST['sale_value'], $_POST['provider'], $_POST['observation'], $CREATED_BY)) {
+    $on_demand = 0;
+    
+    if(isset($_POST['on_demand'])){
+        $on_demand = 1;
+    }
+
+    if ($mProduct->createProduct($_POST['description'], $_POST['quantity'], $_POST['low_stock'], $_POST['unity'], $_POST['measure'], $_POST['cost'], $_POST['sale_value'], $on_demand, $_POST['provider'], $_POST['observation'], $CREATED_BY)) {
         header('location: product.php?create=1');
     } else {
         header('location: product.php?create=0');
@@ -22,7 +43,13 @@ if (isset($_POST['createProduct'])) {
 }
 
 if (isset($_POST['editProduct'])) {
-    if ($mProduct->editProduct($_POST['description'], $_POST['quantity'], $_POST['low_stock'], $_POST['unity'], $_POST['measure'], $_POST['cost'], $_POST['sale_value'], $_POST['provider'], $_POST['observation'], $CREATED_BY, $_POST['id_product'])) {
+    $on_demand = 0;
+
+    if(isset($_POST['on_demand'])){
+        $on_demand = 1;
+    }
+
+    if ($mProduct->editProduct($_POST['description'], $_POST['quantity'], $_POST['low_stock'], $_POST['unity'], $_POST['measure'], $_POST['cost'], $_POST['sale_value'], $on_demand, $_POST['provider'], $_POST['observation'], $CREATED_BY, $_POST['id_product'])) {
         header('location: product.php?edit=1');
     } else {
         header('location: product.php?edit=0');
@@ -109,11 +136,39 @@ if (isset($_POST['deleteProduct'])) {
                 </form>
             </div>
         </div>
+
         <div class="col-md-6"></div>
+
         <div class="col-md-4">
-            <input name="consulta" id="txt_consulta" placeholder="Buscar" type="text" class="form-control">
+            <div class="row">
+                <input name="consulta" id="txt_consulta" placeholder="Buscar" type="text" class="form-control input-row">
+            </div>
         </div>
     </div>
+
+    <div class="col-md-12">
+        <div class="col-md-9"></div>
+
+        <div class="col-md-3" id="limit-dropdown-button">
+            <div class="row">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle btn-row" type="button" id="limitSelect" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Exibindo <?= $_SESSION['limitSelected'] ?> registros
+                    </button>
+                    <form action="product.php" method="post">
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <?php
+                                for ($i = 10; $i < 200 ; $i = ($i * 2)) { ?>
+                                    <button type="submit" class="dropdown-item" name="limitSelect" value="<?= $i ?>">Exibir <?= $i ?> registros</a>
+                                <?php } ?>
+                                <button type="submit" class="dropdown-item" name="limitSelect" value="0">Exibir todos os registros</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <br>
     <!--Tabela de produtos-->
     <table id="tabela" class="table table-hover table-responsive-xl">
@@ -215,13 +270,20 @@ if (isset($_POST['deleteProduct'])) {
                         </div>
                         <br>
                         <div class="row">
-                            <div class="col-md-6">
+                            
+                            <div class="col-md-4">
+                                <label for="low_stock">Estoque baixo</label>
+                                <input type="number" name="low_stock" id="new_low_stock" placeholder="Quantidade para alerta de estoque baixo" class="form-control" required="">
+                            </div>
+                            <div class="col-md-4">
                                 <label for="sale_value">Valor de venda</label>
                                 <input type="text" name="sale_value" id="new_sale_value" placeholder="Valor de venda" class="form-control money" required="">
                             </div>
-                            <div class="col-md-6">
-                                <label for="low_stock">Estoque baixo</label>
-                                <input type="number" name="low_stock" id="new_low_stock" placeholder="Quantidade para alerta de estoque baixo" class="form-control" required="">
+                            <div class="col-md-4">
+                            <label for="on_demand">Produzido sob demanda</label>
+                                <center>
+                                    <input type="checkbox" name="on_demand" id="on_demand" class="form-check-input check_input" title="Produzido sob demanda">
+                                </center>
                             </div>
                         </div>
                         <br>
@@ -230,7 +292,6 @@ if (isset($_POST['deleteProduct'])) {
                                 <label for="provider">Fornecedor</label>
                                 <select name="provider" id="new_provider" class="form-control" required="">
                                     <option value="" selected="" hidden="" disabled="">Selecione</option>
-                                    <option value="0">Sem fornecedor cadastrado</option>
                                     <?php foreach ($providers as $p) { ?>
                                         <option value="<?= $p['ID'] ?>"><?= $p['NAME'] . " - " . $p['CPF_CNPJ'] ?></option>
                                     <?php } ?>                                      

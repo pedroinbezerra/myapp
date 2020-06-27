@@ -16,14 +16,18 @@ if (
     echo 'invalid_field';
 } else {
 
-    if ($_POST['id_order'] == '' || $_POST['id_order'] == null) {
+    if ($mSale->getProduct($_POST['idProduct'])['QUANTITY'] > 0) {
+        if ($_POST['id_order'] == '' || $_POST['id_order'] == null) {
 
-        $orderId = $mSale->createOrder($_POST['idClient'], $CREATED_BY);
-        $mSale->insertOrderDetail($orderId, $_POST['idProduct'], $_POST['qtdProduct'], $_POST['price'], $_POST['totalPrice'], $CREATED_BY);
+            $orderId = $mSale->createOrder($_POST['idClient'], $CREATED_BY);
+            $mSale->insertOrderDetail($orderId, $_POST['idProduct'], $_POST['qtdProduct'], $_POST['price'], $_POST['totalPrice'], $CREATED_BY);
 
-        echo $orderId;
+            echo $orderId;
+        } else {
+            $mSale->insertOrderDetail($_POST['id_order'], $_POST['idProduct'], $_POST['qtdProduct'], $_POST['price'], $_POST['totalPrice'], $CREATED_BY);
+            echo $_POST['id_order'];
+        }
     } else {
-        $mSale->insertOrderDetail($_POST['id_order'], $_POST['idProduct'], $_POST['qtdProduct'], $_POST['price'], $_POST['totalPrice'], $CREATED_BY);
-        echo $_POST['id_order'];
+        echo 'no_stock';
     }
 }
