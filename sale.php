@@ -11,15 +11,15 @@ $mUtil = new mUtil();
 
 $unitys = $mProduct->getUnity();
 $providers = $mProduct->getProviders();
-$products = $mProduct->getProducts();
+$products = $mProduct->getProducts(0);
 $clients = $mClient->getClients();
 
 $CREATED_BY = 1;
 
 if (isset($_POST['finalizeSale'])) {
     $on_demand = 0;
-    
-    if(isset($_POST['on_demand'])){
+
+    if (isset($_POST['on_demand'])) {
         $on_demand = 1;
     }
 
@@ -160,8 +160,8 @@ if (isset($_POST['deleteProduct'])) {
                             <?php } ?>
                         </select>
                     </div>
-                    <div class="col-md-4">
-                        <label for="quantity"><strong>Quantidade</strong></label>
+                    <div class="col-md-3">
+                        <label for="qtd_product_unity"><strong>Quantidade</strong></label>
                         <div class="input-group">
                             <input type="number" id="qtd_product_unity" name="qtd_product_unity" class="form-control" placeholder="quantidade" required="" onkeyup="changeProductUnity()" onchange="changeProductUnity()">
                             <div class="input-group-prepend">
@@ -169,12 +169,22 @@ if (isset($_POST['deleteProduct'])) {
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <label for="quantity"><strong>Em estoque</strong></label>
+                    <div class="col-md-2">
+                        <label for="qtd_product_unity_stock"><strong>Em estoque</strong></label>
                         <div class="input-group">
                             <textarea type="number" id="qtd_product_unity_stock" class="form-control textarea_input" readonly="" rows="1"></textarea>
                             <div class="input-group-prepend">
-                                <div class="input-group-text" id="product_unity_stock"></div>
+                                <div class="input-group-text product_unity_stock"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="quantityReserved"><strong>Reservado</strong></label>
+                        <div class="input-group">
+                            <textarea type="number" id="quantityReserved" class="form-control textarea_input" readonly="" rows="1"></textarea>
+                            <div class="input-group-prepend">
+                                <div class="input-group-text product_unity_stock"></div>
                             </div>
                         </div>
                     </div>
@@ -227,6 +237,7 @@ if (isset($_POST['deleteProduct'])) {
                                 <th scope="col">Quantidade</th>
                                 <th scope="col">Preço final</th>
                                 <th scope="col">Total</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="items">
@@ -238,11 +249,39 @@ if (isset($_POST['deleteProduct'])) {
 
             </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-            <input type="submit" name="finalizeSale" class="btn btn-success" value="Finalizar">
-        </div>
+        <center>
+            <div class="modal-footer" style="display:none">
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#removeOrder">Cancelar Pedido</button>
+                <button type="button" class="btn btn-primary" onclick="goBack()">Voltar</button>
+                <input type="submit" name="finalizeSale" class="btn btn-success" value="Finalizar">
+            </div>
+        </center>
     </form>
 </body>
+
+<!-- Modal -->
+<div class="modal fade" id="removeOrder" tabindex="-1" role="dialog" aria-labelledby="removeOrder" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeOrder">Cancelar pedido</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Confirma o cancelamento do pedido?
+                <br><br>
+                <strong>Todos os registros serão perdidos.</strong>
+            </div>
+            <center>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="removeOrder()">Confirmar</button>
+                </div>
+            </center>
+        </div>
+    </div>
+</div>
 
 </html>

@@ -43,3 +43,27 @@ function negativeNumber(inputId){
         alert("Permitida a entrada somente de números positivos");
     }
 }
+
+function formClear(form){
+    $(form).each (function(){
+        this.reset();
+    });
+}
+
+function validNumber(input){
+    let validNumber = true;
+
+    if(input == 0 || input.trim() == "" || typeof(input) == "undefined"){
+        validNumber = false;
+    }
+
+    return validNumber;
+}
+
+function goBack(){
+    window.history.back();
+}
+
+function reload(){
+    window.location.reload()
+}
