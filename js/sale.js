@@ -1,13 +1,14 @@
 function manageAddToCartButton(inStock) {
-    if (inStock <= 0) {
-        let onDemand = sessionStorage.getItem("onDemand");
-
-        if (onDemand == 0) {
-            $(".addToCart").prop("disabled", true);
-            $(".addToCart").removeAttr("title");
-
-        }
-
+    let onDemand = sessionStorage.getItem("onDemand");
+    
+    if (inStock < 1 && onDemand == 1) {
+        $(".addToCart").removeAttr("disabled");
+        $(".addToCart").removeAttr("title");
+        $(".addToCart").prop("title", "Adicionar ao carrinho");
+        alert("Produto sem estoque (Produzido sob demanda)");
+    } else if(inStock < 1) {
+        $(".addToCart").prop("disabled", true);
+        $(".addToCart").removeAttr("title");
         alert("Produto sem estoque");
         $(".addToCart").prop("title", "Produto sem estoque");
     } else {
@@ -73,7 +74,9 @@ function addToCart() {
 
     let notValidQuantity = !validQuantity(toCart, inStock, reserved);
 
-    if(notValidQuantity){
+    let onDemand = sessionStorage.getItem("onDemand");
+
+    if(notValidQuantity && onDemand == 0){
         let qtdDisponible = validQuantity(toCart, inStock, reserved, 'qtdDisponible');
         alert("A quantidade adicionada é maior que a disponível.\nDisponível: " + qtdDisponible);
         return;
@@ -98,7 +101,7 @@ function addToCart() {
         success: function (html) {
             if (html == 'invalid_field') {
                 alert('Verifique os campos e tente novamente');
-            } else if (html == 'no_stock') {
+            } else if (html == 'no_stock' && onDemand == 0) {
                 alert('Produto sem estoque');
             } else {
                 $("#id_order").val(html);
@@ -192,8 +195,8 @@ function getProductData(id_product) {
     $("#product_price_total").val('');
     saleProductInfo(id_product, 'ABREVIATION', '#product_unity_sale');
     saleProductInfo(id_product, 'ABREVIATION', '.product_unity_stock');
-    getTotalQtdReservedItems(id_product, "#quantityReserved");
     saleProductInfo(id_product, 'QUANTITY', '#qtd_product_unity_stock');
+    getTotalQtdReservedItems(id_product, "#quantityReserved");
     onDemand(id_product);
     getPrice(id_product, 'SALE_VALUE');
     getCost(id_product, 'COST');

@@ -16,7 +16,10 @@ if (
     echo 'invalid_field';
 } else {
 
-    if ($mSale->getProduct($_POST['idProduct'])['QUANTITY'] > 0) {
+    $product = $mSale->getProduct($_POST['idProduct']);
+    $onDemand = $product['ON_DEMAND'] == 1 ? true : false;
+
+    if ($product['QUANTITY'] > 0 || $onDemand) {
         if ($_POST['id_order'] == '' || $_POST['id_order'] == null) {
 
             $orderId = $mSale->createOrder($_POST['idClient'], $CREATED_BY);
