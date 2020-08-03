@@ -67,3 +67,8 @@ function goBack(){
 function reload(){
     window.location.reload()
 }
+
+$(document).ready(function () {
+    $("thead").css("background-color", "#d3dceb");
+    $("html:not(.legacy) table").stickyTableHeaders();
+});
