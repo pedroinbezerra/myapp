@@ -12,3 +12,5 @@
 <link rel="stylesheet" href="css/body.css">
 
 <link rel="stylesheet" href="css/input.css">
+
+<script type="text/javascript" src="vendor/jquery.stickytableheaders.min.js"></script>

@@ -30,7 +30,7 @@ class mSale extends mConnection
 
     public function getOrderDetail($FK_ID_ORDER)
     {
-        $sql = "SELECT PRODUCT.DESCRIPTION, QTD, SALE_DETAIL.SALE_VALUE, TOTAL_COST FROM SALE_DETAIL INNER JOIN PRODUCT ON PRODUCT.ID = SALE_DETAIL.FK_ID_PRODUCT WHERE FK_ID_ORDER = :FK_ID_ORDER";
+        $sql = "SELECT SALE_DETAIL.ID, PRODUCT.DESCRIPTION, QTD, SALE_DETAIL.SALE_VALUE, TOTAL_COST FROM SALE_DETAIL INNER JOIN PRODUCT ON PRODUCT.ID = SALE_DETAIL.FK_ID_PRODUCT WHERE FK_ID_ORDER = :FK_ID_ORDER";
         $con = $this->Connect();
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":FK_ID_ORDER", $FK_ID_ORDER, PDO::PARAM_INT);
@@ -174,5 +174,55 @@ class mSale extends mConnection
         $stmt->bindParam(":TOTAL_COST", $TOTAL_COST, PDO::PARAM_STR);
         $stmt->bindParam(":CREATED_BY", $CREATED_BY, PDO::PARAM_STR);
         return $stmt->execute();
+    }
+
+    public function getReservedProducts($PRODUCT_ID) 
+    {
+        $sql = "SELECT SUM(QTD) AS TOTAL FROM sale_detail INNER JOIN SALE_ORDER ON SALE_ORDER.ID = SALE_DETAIL.FK_ID_ORDER WHERE SALE_ORDER.STATUS = 0 AND FK_ID_PRODUCT = :PRODUCT_ID";
+        $con = $this->Connect();
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":PRODUCT_ID", $PRODUCT_ID, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function removeItemSaleDetail($ID_ITEM)
+    {
+        $sql = "DELETE FROM sale_detail WHERE ID = :ID_ITEM";
+        $con = $this->Connect();
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":ID_ITEM", $ID_ITEM, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function removeOrder($ORDER_ID)
+    {   
+        $sql = "DELETE FROM sale_detail WHERE FK_ID_ORDER = :ORDER_ID";
+
+        $con = $this->Connect();
+        $con->beginTransaction();
+
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":ORDER_ID", $ORDER_ID, PDO::PARAM_INT);
+        
+        if($stmt->execute()){
+            $con->commit();
+        } else{
+            $con->rollBack();
+        }
+
+        $sql = "DELETE FROM sale_order WHERE ID = :ORDER_ID";
+
+        $con = $this->Connect();
+        $con->beginTransaction();
+
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":ORDER_ID", $ORDER_ID, PDO::PARAM_INT);
+
+        if($stmt->execute()){
+            $con->commit();
+        } else{
+            $con->rollBack();
+        }
     }
 }
