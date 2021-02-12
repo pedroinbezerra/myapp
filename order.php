@@ -126,7 +126,7 @@ $CREATED_BY = 1;
                                     </button>
                                 <?php } ?>
 
-                                <button type="button" class="btn btn-danger btn-row" data-toggle="modal" data-target="#deleteOrder" title="Excluir pedido" onclick="orderDelete(<?= $o['ID'] ?>)">
+                                <button type="button" class="btn btn-danger btn-row" data-toggle="modal" data-target="#deleteOrder" title="Excluir pedido" onclick="storeOrderId(<?= $o['ID'] ?>)">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -184,18 +184,21 @@ $CREATED_BY = 1;
     <div class="modal fade" id="deleteOrder" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
-                <form action="product.php" method="post">
+                <form action="" method="">
                     <div class="modal-header">
-                        <h5 class="modal-title">Excluir produto</h5>
+                        <h5 class="modal-title">Excluir pedido</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body" id="bodyDeleteProduct">
+                    <div class="modal-body" id="bodyDeleteOrder">
+                        Confirma a exclusão do pedido?
+                        <br><br>
+                        <strong>O registros desse pedido será removido.</strong>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                        <input type="submit" name="deleteProduct" class="btn btn-success" value="Excluir">
+                        <input type="button" name="deleteOrder" class="btn btn-success" value="Excluir" onclick="orderDelete()">
                     </div>
                 </form>
             </div>
