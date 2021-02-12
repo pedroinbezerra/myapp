@@ -20,7 +20,7 @@ if ($_POST['order_id'] == '' || $_POST['order_id'] == null) {
 
     foreach ($orderDetails as $item) {
 
-        $items = $items . "<tr><td>" . $item['DESCRIPTION'] . "</td><td>" . $item['QTD'] . "</td><td> R$ " . $item['SALE_VALUE'] . "</td><td> R$ " . $item['TOTAL_COST'] . "</td><td><button type='button' class='btn btn-danger btn-sm removeItem' onClick='deleteRow(this, ". $item['ID'] .")'><i class='fas fa-trash' title='Remover item'></i></button></td></tr>";
+        $items = $items . "<tr><td>" . $item['DESCRIPTION'] . "</td><td>" . $item['QTD'] . "</td><td> R$ " . number_format($item['SALE_VALUE'], 2) . "</td><td data-totalcost=". $item['TOTAL_COST'] ."> R$ " . $item['TOTAL_COST'] . "</td><td><button type='button' class='btn btn-danger btn-sm removeItem' onClick='deleteRow(this, ". $item['ID'] .")'><i class='fas fa-trash' title='Remover item'></i></button></td></tr>";
     }
 
     echo $items;

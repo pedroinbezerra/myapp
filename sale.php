@@ -54,7 +54,7 @@ if (isset($_POST['deleteProduct'])) {
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $('.money').mask('#.##0.00', {
+            $('.money').mask('###0.00', {
                 reverse: true
             });
         });
@@ -216,7 +216,7 @@ if (isset($_POST['deleteProduct'])) {
                             <div class="input-group-prepend">
                                 <div class="input-group-text">R$</div>
                             </div>
-                            <input type="text" id="product_price_total" value="" class="form-control" required="" disabled="">
+                            <input type="text" id="product_price_total" value="" class="form-control money" required="" disabled="">
                         </div>
                     </div>
                     <div class="col-md-1">
@@ -224,9 +224,23 @@ if (isset($_POST['deleteProduct'])) {
                     </div>
                 </div>
 
+                <br>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="total_order_value"><strong>Total do pedido</strong></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">R$</div>
+                            </div>
+                            <input type="text" id="total_order_value" value="0.00" class="form-control money" disabled="">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-md-12">
                     <br>
                     <hr><br>
+
                     <center>
                         <h4><label for="inCart"><strong>No carrinho</strong></label></h4>
                     </center>

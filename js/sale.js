@@ -108,9 +108,25 @@ function addToCart() {
                 getOrderItems($("#id_order").val());
                 manageVisibilityFooter("block");
                 getTotalQtdReservedItems($("#product").val(), "#quantityReserved");
+
+                manageTotalOrder($("#product_price_total").val(), "addition");
             }
         }
     });
+}
+
+function manageTotalOrder(itemValue, operation) {
+    let totalOrderValue =  parseFloat($("#total_order_value").val());
+    itemValue = parseFloat(itemValue)
+    var newValue = 0;    
+
+    if (operation == "subtraction" && totalOrderValue > 0) {
+        newValue = totalOrderValue - itemValue;
+    } else if (operation == "addition") {
+        newValue = (totalOrderValue + itemValue).toFixed(2);
+    }
+
+    $("#total_order_value").val(newValue);
 }
 
 function getTotalQtdReservedItems(id_product, element) {
@@ -205,19 +221,13 @@ function getProductData(id_product) {
 }
 
 function recalculatePrice(id_qtd, id_price, id_return) {
-    let price = $("#" + id_price).val().replace(/\D+/g, '');
+    let price = parseFloat($("#" + id_price).val()).toFixed(2);
     let quantity = parseFloat($("#" + id_qtd).val()).toFixed(2);
 
-    let total = price * quantity;
-
-    total = total.toLocaleString('pt-br', {minimumFractionDigits: 2});
-
-    console.log("PRICE: ", price);
-    console.log("QUANTITY: ", quantity);
-    console.log("TOTAL: ", total);
-
-    if ($("#" + id_qtd).val() > 0) {
+    if (price > 0 && quantity > 0) {
+        let total = (quantity * price).toFixed(2);
         $("#" + id_return).val(total);
+
     } else {
         $("#" + id_return).val(0.00);
     }
@@ -246,6 +256,9 @@ function hideActionButtonsOrder() {
 }
 
 function deleteRow(element, item_id) {
+
+    var itemValue = $(element.closest("tr")).find('td[data-totalcost]').data('totalcost');
+
     $(".removeItem").prop("disabled", true);
     $.ajax({
         type: "POST",
@@ -259,10 +272,9 @@ function deleteRow(element, item_id) {
             $(".removeItem").prop("disabled", false);
             $(element).closest("tr").remove();
             manageVisibilityFooter("block");
-
             getTotalQtdReservedItems(idProduct, "#quantityReserved");
-
             hideActionButtonsOrder();
+            manageTotalOrder(itemValue, "subtraction");
         }
     });
 
