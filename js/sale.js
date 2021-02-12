@@ -205,8 +205,19 @@ function getProductData(id_product) {
 }
 
 function recalculatePrice(id_qtd, id_price, id_return) {
+    let price = $("#" + id_price).val().replace(/\D+/g, '');
+    let quantity = parseFloat($("#" + id_qtd).val()).toFixed(2);
+
+    let total = price * quantity;
+
+    total = total.toLocaleString('pt-br', {minimumFractionDigits: 2});
+
+    console.log("PRICE: ", price);
+    console.log("QUANTITY: ", quantity);
+    console.log("TOTAL: ", total);
+
     if ($("#" + id_qtd).val() > 0) {
-        $("#" + id_return).val(parseFloat($("#" + id_price).val() * $("#" + id_qtd).val()).toFixed(2));
+        $("#" + id_return).val(total);
     } else {
         $("#" + id_return).val(0.00);
     }
@@ -228,8 +239,8 @@ function countTableRows(table_id) {
 
 function hideActionButtonsOrder() {
     let qtdTableRows = countTableRows("inCart");
-    
-    if (qtdTableRows < 1){
+
+    if (qtdTableRows < 1) {
         $("#buttonsActionOrder").css("display", "none");
     }
 }

@@ -216,7 +216,7 @@ if (isset($_POST['deleteProduct'])) {
                             <div class="input-group-prepend">
                                 <div class="input-group-text">R$</div>
                             </div>
-                            <input type="text" id="product_price_total" value="" class="form-control money" required="" disabled="">
+                            <input type="text" id="product_price_total" value="" class="form-control" required="" disabled="">
                         </div>
                     </div>
                     <div class="col-md-1">
