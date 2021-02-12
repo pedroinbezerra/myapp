@@ -1,12 +1,12 @@
 function manageAddToCartButton(inStock) {
     let onDemand = sessionStorage.getItem("onDemand");
-    
+
     if (inStock < 1 && onDemand == 1) {
         $(".addToCart").removeAttr("disabled");
         $(".addToCart").removeAttr("title");
         $(".addToCart").prop("title", "Adicionar ao carrinho");
         alert("Produto sem estoque (Produzido sob demanda)");
-    } else if(inStock < 1) {
+    } else if (inStock < 1) {
         $(".addToCart").prop("disabled", true);
         $(".addToCart").removeAttr("title");
         alert("Produto sem estoque");
@@ -51,7 +51,7 @@ function getOrderItems(order_id) {
     });
 }
 
-function validQuantity(toCart, inStock, reserved, returnType) {    
+function validQuantity(toCart, inStock, reserved, returnType) {
     let validValue = true;
     let disponible = inStock - reserved;
 
@@ -59,11 +59,11 @@ function validQuantity(toCart, inStock, reserved, returnType) {
         validValue = false;
     }
 
-    if(returnType == 'qtdDisponible'){
+    if (returnType == 'qtdDisponible') {
         return disponible;
     } else {
         return validValue;
-    }    
+    }
 }
 
 function addToCart() {
@@ -76,7 +76,7 @@ function addToCart() {
 
     let onDemand = sessionStorage.getItem("onDemand");
 
-    if(notValidQuantity && onDemand == 0){
+    if (notValidQuantity && onDemand == 0) {
         let qtdDisponible = validQuantity(toCart, inStock, reserved, 'qtdDisponible');
         alert("A quantidade adicionada é maior que a disponível.\nDisponível: " + qtdDisponible);
         return;
@@ -127,7 +127,7 @@ function getTotalQtdReservedItems(id_product, element) {
     });
 }
 
-function qtdItemDisponible(total, reserved){
+function qtdItemDisponible(total, reserved) {
     return total - reserved;
 }
 
@@ -222,8 +222,16 @@ function changeFinalPrice() {
     negativeNumber("qtd_product_unity");
 }
 
-function removeItem(item_id){
-   
+function countTableRows(table_id) {
+    return $("#" + table_id + " tbody tr").length
+}
+
+function hideActionButtonsOrder() {
+    let qtdTableRows = countTableRows("inCart");
+    
+    if (qtdTableRows < 1){
+        $("#buttonsActionOrder").css("display", "none");
+    }
 }
 
 function deleteRow(element, item_id) {
@@ -242,9 +250,11 @@ function deleteRow(element, item_id) {
             manageVisibilityFooter("block");
 
             getTotalQtdReservedItems(idProduct, "#quantityReserved");
+
+            hideActionButtonsOrder();
         }
     });
-    
+
 }
 
 function removeOrder() {
@@ -261,5 +271,6 @@ function removeOrder() {
             window.location.reload();
         }
     });
-    
+
 }
+

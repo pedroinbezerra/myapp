@@ -250,7 +250,7 @@ if (isset($_POST['deleteProduct'])) {
             </div>
         </div>
         <center>
-            <div class="modal-footer" style="display:none">
+            <div id="buttonsActionOrder" class="modal-footer" style="display:none">
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#removeOrder">Cancelar Pedido</button>
                 <button type="button" class="btn btn-primary" onclick="goBack()">Voltar</button>
                 <input type="submit" name="finalizeSale" class="btn btn-success" value="Finalizar">
