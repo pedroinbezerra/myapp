@@ -22,7 +22,7 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="client.php">Cliente</a>
+                <a class="nav-link" href="client.php">Clientes</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Contas a pagar</a>
