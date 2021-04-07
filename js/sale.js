@@ -31,20 +31,7 @@ function getOrderItems(order_id) {
             order_id: order_id
         },
         success: function (html) {
-            $("#items").html("");
-            $("#items").html(html);
-        }
-    });
-}
-
-function getOrderItems(order_id) {
-    $.ajax({
-        type: "POST",
-        url: "components/ajax/sale/get_order_items.php",
-        data: {
-            order_id: order_id
-        },
-        success: function (html) {
+            sessionStorage.setItem("orderItems", html)
             $("#items").html("");
             $("#items").html(html);
         }
@@ -116,9 +103,9 @@ function addToCart() {
 }
 
 function manageTotalOrder(itemValue, operation) {
-    let totalOrderValue =  parseFloat($("#total_order_value").val());
+    let totalOrderValue = parseFloat($("#total_order_value").val());
     itemValue = parseFloat(itemValue)
-    var newValue = 0;    
+    var newValue = 0;
 
     if (operation == "subtraction" && totalOrderValue > 0) {
         newValue = totalOrderValue - itemValue;
@@ -295,5 +282,89 @@ function removeOrder() {
         }
     });
 
+}
+
+function insertTransaction(order_id, token_transaction, payment_method) {
+    $.ajax({
+        type: "POST",
+        url: "components/ajax/transaction/insert_transaction.php",
+        data: {
+            order_id, orderId,
+            token_transaction: token_transaction,
+            payment_method: payment_method
+        },
+        success: function (html) {
+            return html;
+        }
+    });
+}
+
+function updateOrderStatus(order_id, status_id) {
+    $.ajax({
+        type: "POST",
+        url: "components/ajax/sale/update_status.php",
+        data: {
+            order_id, orderId,
+            status_id: status_id
+        },
+        success: function (html) {
+            return html;
+        }
+    });
+}
+
+function pagarmePayment(ammount, items) {
+
+    var checkout = new PagarMeCheckout.Checkout({
+        encryption_key: ENCRYPTION_KEY_SANDBOX,
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (err) {
+            console.log(err);
+        },
+        close: function () {
+            console.log('The modal has been closed.');
+        }
+    });
+
+    checkout.open({
+        amount: ammount,
+        customerData: 'true',
+        createToken: 'true',
+        items: items
+    })
+}
+
+function pay() {
+
+    $("#btnFinalizeSale").prop("disabled", true);
+
+    try {
+        var orderId = $("#id_order").val();
+
+        $.ajax({
+            type: "POST",
+            url: "components/ajax/sale/get_order_details.php",
+            data: {
+                order_id: orderId
+            },
+            success: function (html) {
+                let orderDetails = JSON.parse(html);
+                let items = JSON.parse(orderDetails.items);
+                let ammount = convertRealToCents(orderDetails.ammount);
+                let transaction = pagarmePayment(ammount, items);
+
+                insertTransaction(orderId, transaction.token, transaction.payment_method);
+
+
+            }
+        });
+    } catch (error) {
+
+        console.log("Erro:\n", error);
+
+        $("#btnFinalizeSale").prop("disabled", false);
+    }
 }
 
