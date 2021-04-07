@@ -1,0 +1,1 @@
+const ENCRYPTION_KEY_SANDBOX = 'ek_test_WQoFhEs6RwTiOG6RQO49pnuCF9CglU';
