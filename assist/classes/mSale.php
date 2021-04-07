@@ -60,10 +60,10 @@ class mSale extends mConnection
 
     public function getProducts($limit = 20)
     {
-        if($limit == 0){
+        if ($limit == 0) {
             $sql_limit = "";
         } else {
-            $sql_limit = " LIMIT " . $limit; 
+            $sql_limit = " LIMIT " . $limit;
         }
         $sql = "SELECT * FROM PRODUCT" . $sql_limit;
         $con = $this->Connect();
@@ -176,7 +176,7 @@ class mSale extends mConnection
         return $stmt->execute();
     }
 
-    public function getReservedProducts($PRODUCT_ID) 
+    public function getReservedProducts($PRODUCT_ID)
     {
         $sql = "SELECT SUM(QTD) AS TOTAL FROM sale_detail INNER JOIN SALE_ORDER ON SALE_ORDER.ID = SALE_DETAIL.FK_ID_ORDER WHERE SALE_ORDER.STATUS = 0 AND FK_ID_PRODUCT = :PRODUCT_ID";
         $con = $this->Connect();
@@ -196,7 +196,7 @@ class mSale extends mConnection
     }
 
     public function removeOrder($ORDER_ID)
-    {   
+    {
         $sql = "DELETE FROM sale_detail WHERE FK_ID_ORDER = :ORDER_ID";
 
         $con = $this->Connect();
@@ -204,10 +204,10 @@ class mSale extends mConnection
 
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":ORDER_ID", $ORDER_ID, PDO::PARAM_INT);
-        
-        if($stmt->execute()){
+
+        if ($stmt->execute()) {
             $con->commit();
-        } else{
+        } else {
             $con->rollBack();
         }
 
@@ -219,10 +219,21 @@ class mSale extends mConnection
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":ORDER_ID", $ORDER_ID, PDO::PARAM_INT);
 
-        if($stmt->execute()){
+        if ($stmt->execute()) {
             $con->commit();
-        } else{
+        } else {
             $con->rollBack();
         }
+    }
+
+    public function updateOrderStatus($ORDER_ID, $NEW_STATUS_ID, $MODIFIED_BY)
+    {
+        $sql = "UPDATE SALE_ORDER SET STATUS = :NEW_STATUS_ID, MODIFIED_BY = :MODIFIED_BY, MODIFIED_ON = NOW() WHERE ID = :ORDER_ID";
+        $con = $this->Connect();
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":NEW_STATUS_ID", $NEW_STATUS_ID, PDO::PARAM_INT);
+        $stmt->bindParam(":MODIFIED_BY", $MODIFIED_BY, PDO::PARAM_INT);
+        $stmt->bindParam(":ORDER_ID", $ORDER_ID, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 }

@@ -1,3 +1,5 @@
+<script type="text/javascript" src="js/config.js"></script>
+
 <script type="text/javascript" src="vendor/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="vendor/popper/popper.min.js"></script>
 <script type="text/javascript" src="vendor/jQuery-Mask-Plugin/jquery.mask.min.js"></script>

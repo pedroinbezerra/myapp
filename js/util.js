@@ -36,36 +36,47 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 5000);
 }, false);
 
-function negativeNumber(inputId){
+function negativeNumber(inputId) {
     let value = document.getElementById(inputId).value;
-    if(value < 0){
+    if (value < 0) {
         document.getElementById(inputId).value = 0;
         alert("Permitida a entrada somente de números positivos");
     }
 }
 
-function formClear(form){
-    $(form).each (function(){
+function formClear(form) {
+    $(form).each(function () {
         this.reset();
     });
 }
 
-function validNumber(input){
+function validNumber(input) {
     let validNumber = true;
 
-    if(input == 0 || input.trim() == "" || typeof(input) == "undefined"){
+    if (input == 0 || input.trim() == "" || typeof (input) == "undefined") {
         validNumber = false;
     }
 
     return validNumber;
 }
 
-function goBack(){
+function goBack() {
     window.history.back();
 }
 
-function reload(){
+function reload() {
     window.location.reload()
+}
+
+function convertRealToCents(ammout) {
+    let result = '';
+    try {
+        result = ammout * 100;
+    } catch (error) {
+        result = 'Não foi possível multiplicar o valor ' + ammout + ' por 100';
+    }
+
+    return result;
 }
 
 $(document).ready(function () {
