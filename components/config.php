@@ -2,6 +2,10 @@
 
 session_start();
 
+define('ENCRYPTION_KEY_SANDBOX', 'ek_test_WQoFhEs6RwTiOG6RQO49pnuCF9CglU');
+
+$_SESSION['ENCRYPTION_KEY_SANDBOX'] = constant('ENCRYPTION_KEY_SANDBOX');
+
 $_SESSION['app_title'] = ucfirst(strtolower("myapp"));
 
 require_once('assist/classes/mConnect.php');
