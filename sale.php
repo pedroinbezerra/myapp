@@ -50,6 +50,8 @@ if (isset($_POST['deleteProduct'])) {
     <?php require_once('components/script.php'); ?>
     <script type="text/javascript" src="vendor/jquery.quicksearch.js"></script>
     <script type="text/javascript" src="js/sale.js"></script>
+    <script src="https://assets.pagar.me/checkout/1.1.0/checkout.js"></script>
+
     <link rel="stylesheet" href="css/button.css" />
 
     <script type="text/javascript">
@@ -126,7 +128,8 @@ if (isset($_POST['deleteProduct'])) {
         </center>
     <?php } ?>
 
-    <form action="sale.php" method="post">
+    <!-- <form action="sale.php" method="post"> -->
+    <div>
         <div class="modal-header">
             <h5 class="modal-title">Novo pedido</h5>
         </div>
@@ -267,10 +270,11 @@ if (isset($_POST['deleteProduct'])) {
             <div id="buttonsActionOrder" class="modal-footer" style="display:none">
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#removeOrder">Cancelar Pedido</button>
                 <button type="button" class="btn btn-primary" onclick="goBack()">Voltar</button>
-                <input type="submit" name="finalizeSale" class="btn btn-success" value="Finalizar">
+                <input type="submit" id="btnFinalizeSale" name="finalizeSale" class="btn btn-success" value="Finalizar" onclick="pay()">
             </div>
         </center>
-    </form>
+    </div>
+    <!-- </form> -->
 </body>
 
 <!-- Modal -->
