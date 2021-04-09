@@ -5,7 +5,7 @@ session_destroy();
 
 $mAuth = new mAuth();
 
-if (isset($_POST['bLogin'])) {
+if (isset($_POST['btnLogin'])) {
     $validation = $mAuth->validate($_POST['username'], $_POST['password']);
     echo ($validation);
 
@@ -60,7 +60,7 @@ if (isset($_GET['valid'])) {
                 <div class="form-group">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Senha">
                 </div>
-                <input type="submit" class="btn btn-primary" name="bLogin" value="Login">
+                <input type="submit" class="btn btn-primary" name="btnLogin" value="Login">
                 <br><br>
                 <a href="">Esqueci minha senha</a>
             </form>
